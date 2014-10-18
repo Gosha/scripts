@@ -8,6 +8,8 @@ function silentmp () {
     mpv --no-terminal $1
 }
 
+# TODO: Can probably use youtube-dl for this
+
 function wowgirlsblog_url () {
     curl -s $1 | grep -Po '(?<="file",").*(?=")'
 }
