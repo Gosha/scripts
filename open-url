@@ -1,0 +1,28 @@
+#!/bin/bash
+BROWSER=/usr/lib64/firefox/firefox
+
+function is_image() {
+    echo "$1" | grep -Ei '\.(jpg|jpeg|png)$'
+    return $?
+}
+
+function is_youtube() {
+    echo "$1" | grep -P 'https?://(?:www\.)?youtu(?:be\.com/watch\?v=|\.be/)(\w*)(&(amp;)?[\w\?=]*)?'
+    return $?
+}
+
+echo "$*" >> $HOME/urllog
+
+if is_image "$1"
+then
+    feh $1
+elif is_youtube "$1"
+then
+    $HOME/bin/mpv "$1"
+    if test $? -ne 0
+    then
+        $BROWSER $*
+    fi
+else
+    $BROWSER $*
+fi
