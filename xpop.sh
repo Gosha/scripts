@@ -1,0 +1,2 @@
+#!/bin/bash
+xprop | grep --color=none "WM_CLASS\|^WM_NAME" | xmessage -file -
