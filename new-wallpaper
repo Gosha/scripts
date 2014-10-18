@@ -1,0 +1,5 @@
+#!/bin/bash
+# Set a random wallpaper
+# (feh saves the command to ~/.fehbg)
+WP_DIR=$HOME/Pictures/wp/
+feh --bg-fill `find $WP_DIR -maxdepth 1 -regex '.*\(jpg\|png\|gif\)$' -xtype f | sort -R | head -1`
