@@ -1,0 +1,25 @@
+#!/bin/bash
+THUMBER="/home/gosha/git/mcomix/mime/comicthumb"
+FILETYPES="rar zip"
+THUMBNAILS="/home/gosha/.thumbnails/normal"
+
+function create_url() {
+    perl -MURI::file -e 'print URI::file->new(<STDIN>)' | sed 's/\[/%5B/g' | sed 's/\]/%5D/g'
+}
+
+function create_thumbnail() {
+    filename=$1
+    file_uri=$(echo `pwd`/$filename | create_url)
+    echo -n $file_uri:
+    md5=$(echo -n $file_uri | md5sum | cut -f 1 -d ' ')
+    $THUMBER "$filename" $THUMBNAILS/$md5.png
+    echo $md5
+}
+
+for filetype in $FILETYPES
+do
+    find -iname "*.$filetype" | while read file
+    do
+        create_thumbnail "$file"
+    done
+done
