@@ -9,5 +9,5 @@ if [ ! -z "$*" ]
 then
     command=$1
     shift
-    $command $*
+    $command "$@"
 fi

@@ -21,8 +21,8 @@ then
     $HOME/bin/mpv "$1"
     if test $? -ne 0
     then
-        $BROWSER $*
+        $BROWSER "$@"
     fi
 else
-    $BROWSER $*
+    $BROWSER "@*"
 fi
