@@ -80,7 +80,7 @@ except IndexError:
     print("Something went wrong while fetching data.")
     sys.exit(1)
 
-soup = BeautifulSoup(resp)
+soup = BeautifulSoup(resp, "lxml")
 
 for row in soup.find_all(True,"tlistrow"):
     name = row.select(".tlistname")[0].text
