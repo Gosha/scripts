@@ -2,6 +2,7 @@
 
 from docopt import docopt
 import urllib2
+import urllib
 from bs4 import BeautifulSoup
 import sys
 
@@ -72,7 +73,7 @@ else:
 
 try:
     search = args['<search>']
-    data.append("term=" + search)
+    data.append("term=" + urllib.quote(search))
     searchurl = makeurl(url, data)
     resp = urllib2.urlopen(searchurl).read()
 except IndexError:
