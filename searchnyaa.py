@@ -5,6 +5,9 @@ import urllib2
 import urllib
 from bs4 import BeautifulSoup
 import sys
+import codecs
+
+sys.stdout = codecs.getwriter('utf8')(sys.stdout)
 
 def makeurl(url, data):
     return "http://" + url + "/?page=torrents&filter=0&" + "&".join(data)
