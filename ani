@@ -1,0 +1,25 @@
+#!/bin/bash
+
+# Helper script for common anime stuff
+
+METADIR=$HOME/anime-metadata
+ACTION=$1
+shift
+
+case $ACTION in
+    list)
+        ls "$METADIR"
+        ;;
+    db)
+        . "$METADIR/$1"
+        anidb -aw "$ANIMEDIR/"*$2*
+        ;;
+    dl)
+        . "$METADIR/$1"
+        nyaadl.sh "$(printf "$ANIMESEARCH" $2)"
+        ;;
+    torr)
+        . "$METADIR/$1"
+        deluge-console "add \"$2\" --path \"$ANIMEDIR\""
+        ;;
+esac
