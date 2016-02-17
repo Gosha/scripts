@@ -78,7 +78,7 @@ try:
     search = args['<search>']
     data.append("term=" + urllib.quote(search))
     searchurl = makeurl(url, data)
-    resp = urllib2.urlopen(searchurl).read()
+    resp = urllib2.urlopen(searchurl, timeout = 5).read()
 except IndexError:
     print("Something went wrong while fetching data.")
     sys.exit(1)
