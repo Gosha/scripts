@@ -1,8 +1,10 @@
 #!/usr/bin/env python2
 
+from __future__ import print_function
 from docopt import docopt
 import urllib2
 import urllib
+import socket
 from bs4 import BeautifulSoup
 import sys
 import codecs
@@ -63,6 +65,9 @@ sukebei_cats = {
 
 data = []
 
+def print_error(*objs):
+    print("Error: ", *objs, file=sys.stderr)
+
 if args['--sukebei']:
     url = "sukebei.nyaa.se"
     if args['--manga']:
@@ -80,8 +85,14 @@ try:
     searchurl = makeurl(url, data)
     resp = urllib2.urlopen(searchurl, timeout = 5).read()
 except IndexError:
-    print("Something went wrong while fetching data.")
+    print_error("Something went wrong while fetching data.")
     sys.exit(1)
+except urllib2.URLError, e:
+    if isinstance(e.reason, socket.timeout):
+        print_error("Connection timed out.")
+        sys.exit(1)
+    else:
+        raise
 
 soup = BeautifulSoup(resp, "lxml")
 
