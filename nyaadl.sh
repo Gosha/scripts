@@ -8,11 +8,10 @@ if ! result=$(searchnyaa.py "$@"); then
 fi
 
 RESULTNUM=$(echo -n "$result" | wc -l)
-echo "RESULTNUM: $RESULTNUM"
 
-if (( $RESULTNUM -eq 0 )); then
-    >&2 echo "no results"
-    exit;
+if [ "$RESULTNUM" -eq 0 ]; then
+    >&2 echo "No results."
+    exit
 fi
 
 function download_torrent() {
