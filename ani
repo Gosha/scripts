@@ -16,6 +16,7 @@ case $ACTION in
         ;;
     dl)
         . "$METADIR/$1"
+        printf "Searching for: $ANIMESEARCH\n" $2
         nyaadl.sh "$(printf "$ANIMESEARCH" $2)"
         ;;
     torr)
