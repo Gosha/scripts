@@ -7,7 +7,7 @@ if ! result=$(searchnyaa.py "$@"); then
     exit 1
 fi
 
-RESULTNUM=$(echo -n "$result" | wc -l)
+RESULTNUM=$(echo "$result" | wc -l)
 
 if [ "$RESULTNUM" -eq 0 ]; then
     >&2 echo "No results."
