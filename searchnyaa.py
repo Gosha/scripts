@@ -66,7 +66,7 @@ sukebei_cats = {
 data = []
 
 def print_error(*objs):
-    print("Error: ", *objs, file=sys.stderr)
+    print("Error:", *objs, file=sys.stderr)
 
 if args['--sukebei']:
     url = "sukebei.nyaa.se"
