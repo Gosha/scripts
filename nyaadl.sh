@@ -3,11 +3,11 @@
 # Download torrents from nyaa. Select using percol, download the
 # torrents with wget.
 
-if ! result=$(searchnyaa.py "$@"); then
+if ! RESULT=$(searchnyaa.py "$@"); then
     exit 1
 fi
 
-if [ -z "$result" ]; then
+if [ -z "$RESULT" ]; then
     >&2 echo "No results."
     exit
 fi
@@ -19,7 +19,7 @@ function download_torrent() {
     wget -O "$name.torrent" "$link"
 }
 
-echo -n "$result" | percol |\
+echo -n "$RESULT" | percol |\
     while read line; do
         download_torrent "$line"
     done
