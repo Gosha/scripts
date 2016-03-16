@@ -23,4 +23,7 @@ case $ACTION in
         . "$METADIR/$1"
         deluge-console "add \"$2\" --path \"$ANIMEDIR\""
         ;;
+    cal)
+        . "$METADIR/$1"
+        animecal "$ANIMECALENDAR" $2 $3
 esac
