@@ -1,0 +1,100 @@
+#!/usr/bin/env python2
+"""Lists seen episodes or marks them as watched on animecalendar.com
+
+Usage: animecal ANIMEID [FROM [TO]]
+
+-h --help     Show this
+-v --version  Show version
+"""
+
+VERSION="0.2"
+
+import requests
+import re
+import sys
+import collections
+import netrc
+from docopt import docopt
+
+netrc_auth = netrc.netrc().authenticators("animecalendar.com")
+
+user = netrc_auth[0]
+password = netrc_auth[2]
+loginsite = "http://animecalendar.net/login"
+
+logindata = {
+    "signin[username]" : user,
+    "signin[password]" : password,
+}
+s = requests.Session()
+
+def login():
+    r = s.get(loginsite)
+    csrf_token_place = "signin[_csrf_token]"
+    csrf_place =  r.text.find(csrf_token_place)
+    first_offset = len(csrf_token_place)+len('" value="')
+    csrf_length = len("2fd1ce25609d659c9bbb9ad0fad149c3")
+    csrf_token =  r.text[csrf_place+first_offset:csrf_place+first_offset+csrf_length]
+    logindata.update({"signin[_csrf_token]" : csrf_token})
+
+    r = s.post(loginsite, logindata)
+
+
+def get_episode_list(animeid):
+    list_link = "http://animecalendar.net/ajax/episodes/{}/500/0".format(animeid)
+    r = s.get(list_link)
+
+    episodes = {}
+    for a in [x for x in re.finditer("good(\d?).gif[^<>]+watched\(([^)]+)\)", r.text)]:
+        #epid ep    day mon  year
+        #7017, 1, 0, 15, 02, 2007
+        epid, ep, zero, day, mon, year = a.group(2).split(",")
+        episodes.update(
+            {int(ep.strip()):
+             {"id": epid.strip(),
+              "watched" : a.group(1) == "3",
+              "date": "{}-{}-{}".format(year.strip(), mon.strip(), day.strip())}})
+    return episodes
+
+def show_episodes(ord_eps):
+    for k, v in ord_eps.iteritems():
+        watched =  "*" if v['watched'] else ""
+        print "{:>3} {} {}".format(k, v['date'], watched)
+
+def mark_watched(ep, epid):
+    # Date doesn't seem to matter
+    watched_link = "http://animecalendar.net/ajax/episode/watched/25/12/2014/{}".format(epid)
+    r = s.get(watched_link)
+
+    if r.status_code != 200 or r.text.strip() != "1":
+        print r.status_code
+        print "{}: {}".format(ep, r.text)
+
+def main(argv):
+    """Marks one or more episodes on animecalendar as watched"""
+    args = docopt(__doc__, argv=argv[1:], version=VERSION)
+    login()
+    eps = get_episode_list(args['ANIMEID'])
+    ord_eps = collections.OrderedDict(sorted(eps.items(), key=lambda x: int(x[0])))
+
+    if not args['FROM']:
+        show_episodes(ord_eps)
+        return 0
+
+    try:
+        if args['FROM']:
+            start_ep = int(args['FROM'])
+            if not args['TO']:
+                end_ep = int(args['FROM'])
+            else:
+                end_ep = int(args['TO'])
+
+            for ep in range(start_ep, end_ep+1):
+                mark_watched(ep, ord_eps[ep]["id"])
+
+    except ValueError:
+        sys.stderr.write("Error: FROM and TO has to be integers\n")
+        return 1
+
+if __name__ == "__main__":
+    sys.exit(main(sys.argv))
