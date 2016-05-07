@@ -99,4 +99,4 @@ soup = BeautifulSoup(resp, "lxml")
 for row in soup.find_all(True,"tlistrow"):
     name = row.select(".tlistname")[0].text
     link = row.find("a", title="Download").get("href")
-    print(name + u"\t" + link)
+    print(name + u"\thttp:" + link)
