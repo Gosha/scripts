@@ -71,13 +71,13 @@ def print_error(*objs):
 if args['--sukebei']:
     url = "sukebei.nyaa.se"
     if args['--manga']:
-        data.append(sukebei_cats["Art - Manga"])
+        data.append("cats=" + sukebei_cats["Art - Manga"])
 else:
     url = "www.nyaa.se"
     if args['--manga']:
-        data.append(nyaa_cats["Literature"])
+        data.append("cats=" + nyaa_cats["Literature"])
     else:
-        data.append(nyaa_cats["Anime - English-translated Anime"])
+        data.append("cats=" + nyaa_cats["Anime - English-translated Anime"])
 
 try:
     search = args['<search>']
