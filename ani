@@ -26,4 +26,15 @@ case $ACTION in
     cal)
         . "$METADIR/$1"
         animecal "$ANIMECALENDAR" $2 $3
+        ;;
+    *)
+        cat <<EOF
+Actions available:
+  list
+  db
+  dl
+  torr
+  cal
+EOF
+        ;;
 esac
