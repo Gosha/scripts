@@ -14,6 +14,9 @@ import re
 import sys
 import collections
 import netrc
+from datetime import datetime
+from dateutil.parser import parse
+from colored import fg, attr
 from docopt import docopt
 
 netrc_auth = netrc.netrc().authenticators("animecalendar.com")
@@ -58,8 +61,18 @@ def get_episode_list(animeid):
 
 def show_episodes(ord_eps):
     for k, v in ord_eps.iteritems():
-        watched =  "*" if v['watched'] else ""
-        print "{:>3} {} {}".format(k, v['date'], watched)
+        color = ""
+        watched = ""
+        reset = attr('reset')
+
+        if parse(v['date']) < datetime.now():
+            color = fg('light_blue')
+
+        if v['watched']:
+            watched =  "*"
+            color = fg('green')
+
+        print "{}{:>3} {} {}{}".format(color, k, v['date'], watched, reset)
 
 def mark_watched(ep, epid):
     # Date doesn't seem to matter
